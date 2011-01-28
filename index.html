@@ -1,0 +1,77 @@
+<html>
+	<head>
+		<title>Clock of Clocks</title>
+		<style type="text/css">
+		body{
+			font-family: Book Antiqua, Georgia, serif;
+			color: #2D2D2D;
+			margin: 0px;
+			padding: 0px;
+			background-image: -webkit-gradient(
+					linear,
+					left top, 
+					left bottom, 
+					color-stop(0, rgb(230, 230, 230)),
+					color-stop(1, rgb(255, 255, 255))
+				);
+			background-image: -moz-linear-gradient(
+					center top, 
+					rgb(230, 230, 230) 0%,
+					rgb(255, 255, 255) 100%
+				);
+		}
+		canvas{
+			width: 872px;
+			height: 350px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin: -175px 0px 0px -425px;
+		}
+		h1{
+			font-family: Georgia, serif;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin: -230px 0px 0px -420px;
+			font-size: 45px;
+			font-weight: normal;
+			letter-spacing: 0.1em;
+		}
+		em {
+			font-family: Times New Roman, serif;
+		}
+		#footer {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin: 170px 0px 0px -420px;
+			text-align: right;
+			width: 860px;
+			font-size: 14px;
+		}
+		#notice {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin: -200px 0px 0px -420px;
+			text-align: right;
+			width: 860px;
+			font-size: 14px;			
+		}
+		a {
+			color: #333333;
+			text-decoration: none;
+		}
+		</style>
+		<script type="text/javascript" src="clock.js"></script>
+	</head>
+	
+	<body>
+		<h1>Clock <em>of</em> Clocks</h1>
+		<canvas id="background" width="872" height="350"></canvas>
+		<canvas id="foreground" width="872" height="350"></canvas>
+		<div id="footer">by <a href="http://www.imaginaryroots.co.uk">imaginary<strong>roots</strong></a>. inspired by <a href="http://www.humanssince1982.com"><strong>humans since 1982</strong></a></div>
+		<div id="notice">best viewed in <a href="">chrome</a> / <a href="http://apple.com/safari">safari</a> / <a href="">firefox 4</a></div>
+	</body>
+</html>
