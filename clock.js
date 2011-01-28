@@ -6,9 +6,21 @@ var numClocks = 24;
 var width = 100;
 var height = 100;
 var padding = 8;
+var lastHour = 0;
+var lastMinute = 0;
 var timeouts = new Array(new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3));
 var targets = new Array(new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3));
+var canvases = new Array(new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3));
+var speeds = new Array(new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3), new Array(3));
 var current =  [[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
+				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
+				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
+				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
+				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
+				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
+				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
+				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}]];
+var start =  [[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
 				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
 				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
 				[{hour: 0, minute: 0}, {hour: 0, minute: 0}, {hour: 0, minute: 0}], 
@@ -100,7 +112,7 @@ var arrangements = {
 	}
 };
 
-function drawClockFace(x, y, width, height) {
+function drawClockFace(x, y, width, height, xPos, yPos) {
 	// Add the shadow
 	bgContext.shadowOffsetX = 0;
 	bgContext.shadowOffsetY = 0;
@@ -142,13 +154,23 @@ function drawClockFace(x, y, width, height) {
 	bgContext.fillStyle = whiteGradient;
 	bgContext.fill();
 	
+	// Create the canvas for the face
+	var canvas = document.createElement('canvas');
+	canvas.width = width;
+	canvas.height = height;
+	canvas.style.position = 'absolute';
+	canvas.style.top = y;
+	canvas.style.left = x;
+	document.getElementById('canvas-wrapper').appendChild(canvas);
+	canvases[xPos][yPos] = canvas.getContext('2d');
+	
 	// Add the roman numerals
 	/*var fontSize = 24;
 
 	bgContext.fillStyle = '#9C826F';
 	bgContext.font = '' + fontSize + 'px times new roman';	
 	bgContext.save();
-	bgContext.translate(x + (width / 2), y + (height / 2));
+	bgcontext.translate((width / 2), (height / 2));
 		
 	var textY = -1 * (width - 60) / 2;	
 	var textSize = bgContext.measureText('XII');
@@ -179,59 +201,68 @@ function drawHands(xPos, yPos, hourAngle, minuteAngle) {
 	var hoursLength = ((width/2) - 15);
 	var minutesLength = hoursLength;
 	
+	var context = canvases[xPos][yPos];
+	
 	// Add a shadow to the hands
-	fgContext.shadowOffsetX = 0;
-	fgContext.shadowOffsetY = 0;
-	fgContext.shadowBlur = 4;
-	fgContext.shadowColor = '#999999';
+	context.shadowOffsetX = 0;
+	context.shadowOffsetY = 0;
+	context.shadowBlur = 4;
+	context.shadowColor = '#999999';
 	
-	fgContext.clearRect(x, y, width, height);
+	context.clearRect(0, 0, width, height);
 	
-	fgContext.save();
+	context.save();
 	
 	// Draw the hour hand
-	fgContext.fillStyle = '#000000';
-	fgContext.translate(x + (width / 2), y + (height / 2));
-	fgContext.rotate((hourAngle * Math.PI) / 180);
-	fgContext.fillRect(-3, -1 * hoursLength, 6, hoursLength);
+	context.fillStyle = '#000000';
+	context.translate((width / 2), (height / 2));
+	context.rotate((hourAngle * Math.PI) / 180);
+	context.fillRect(-3, -1 * hoursLength, 6, hoursLength);
 	
-	fgContext.restore();
-	fgContext.save();
+	context.restore();
+	context.save();
 	
 	// Draw the minute hand
-	fgContext.translate(x + (width / 2), y + (height / 2));
-	fgContext.rotate((minuteAngle * Math.PI) / 180);
-	fgContext.fillRect(-3, -1 * minutesLength, 6, minutesLength);	
+	context.translate((width / 2), (height / 2));
+	context.rotate((minuteAngle * Math.PI) / 180);
+	context.fillRect(-3, -1 * minutesLength, 6, minutesLength);	
 	
-	fgContext.restore();	
-	fgContext.save();
+	context.restore();	
+	context.save();
 	
-	fgContext.shadowBlur = 0;
+	context.shadowBlur = 0;
 
 	// Add the central circle
-	fgContext.fillStyle = '#000000';
-	fgContext.translate(x + (width / 2), y + (height / 2));
-	fgContext.beginPath(); 
-	fgContext.arc(0, 0, 4, 0, Math.PI * 2, false); 
-	fgContext.closePath();
-	fgContext.fill();
+	context.fillStyle = '#000000';
+	context.translate((width / 2), (height / 2));
+	context.beginPath(); 
+	context.arc(0, 0, 4, 0, Math.PI * 2, false); 
+	context.closePath();
+	context.fill();
 	
 	// Add the screw head
-	fgContext.fillStyle = '#C29428';
-	fgContext.beginPath(); 
-	fgContext.arc(0, 0, 2, 0, Math.PI * 2, false); 
-	fgContext.closePath();
-	fgContext.fill();
+	context.fillStyle = '#C29428';
+	context.beginPath(); 
+	context.arc(0, 0, 2, 0, Math.PI * 2, false); 
+	context.closePath();
+	context.fill();
 
-	fgContext.restore();
-	
-	current[xPos][yPos] = {hour: hourAngle, minute: minuteAngle};
+	context.restore();
 	
 	// Loop if we haven't reached the target angle
+	var hourChange = 0;
+	var minuteChange = 0;
+	
 	if(!withinRange(hourAngle, targets[xPos][yPos].hour, 0.5) || !withinRange(minuteAngle, targets[xPos][yPos].minute, 0.5)) {
-		var hourChange = Math.abs((hourAngle - targets[xPos][yPos].hour) / 40);
-		var minuteChange = Math.abs((minuteAngle - targets[xPos][yPos].minute) / 40);
-		timeouts[xPos][yPos] = setTimeout('drawHands('+xPos+', '+yPos+', '+((hourAngle + hourChange) % 360)+', '+((minuteAngle + minuteChange) % 360)+')', 5);
+		hourChange = Math.min(Math.abs(hourAngle - targets[xPos][yPos].hour), Math.abs(start[xPos][yPos].hour - hourAngle)) / 30;
+		minuteChange = Math.min(Math.abs(minuteAngle - targets[xPos][yPos].minute), Math.abs(start[xPos][yPos].minute - minuteAngle)) / 20;
+	}
+
+	if(hourChange != 0 || minuteChange != 0) {
+		current[xPos][yPos] = {hour: hourAngle, minute: minuteAngle};
+		timeouts[xPos][yPos] = setTimeout('drawHands('+xPos+', '+yPos+', '+(hourAngle + hourChange)+', '+(minuteAngle + minuteChange)+')', 5);
+	} else {
+		current[xPos][yPos] = {hour: hourAngle % 360, minute: minuteAngle % 360};
 	}
 }
 
@@ -246,13 +277,24 @@ function animateToTime(xPos, yPos, hours, minutes) {
 	hourAngle = (hourAngle == 0) ? 360 : hourAngle;
 	minuteAngle = (minuteAngle == 0) ? 360 : minuteAngle;
 	
-	targets[xPos][yPos] = {hour: hourAngle, minute: minuteAngle};
+	start[xPos][yPos] = current[xPos][yPos];
+	current[xPos][yPos] = {hour: current[xPos][yPos].hour + 0.1, minute: current[xPos][yPos].minute + 0.1};
+	
+	rotations = Math.floor(Math.random() * 2) + 1;
+	targets[xPos][yPos] = {hour: hourAngle + (360 * rotations), minute: minuteAngle + (360 * rotations)};
 	timeouts[xPos][yPos] = setTimeout('drawHands('+xPos+', '+yPos+', '+current[xPos][yPos].hour+', '+current[xPos][yPos].minute+')', 0);
 }
 
 function displayTime() {
 	var hour = new Date().getHours().toString();
 	var minute = new Date().getMinutes().toString();
+	
+	if(hour == lastHour && minute == lastMinute) {
+		return;
+	}
+	lastHour = hour;
+	lastMinute = minute;
+	
 	var hourL, hourR, minL, minR;
 	
 	if(hour.length == 1) {
@@ -296,7 +338,7 @@ window.onload = function() {
 		var xPos = i % 8;
 		var yPos = Math.floor(i/8);
 		
-		drawClockFace(padding + xPos * (width + padding), padding + yPos * (height + padding), width, height);
+		drawClockFace(padding + xPos * (width + padding), padding + yPos * (height + padding), width, height, xPos, yPos);
 	}
 	
 	displayTime();

@@ -20,13 +20,16 @@
 					rgb(255, 255, 255) 100%
 				);
 		}
-		canvas{
+		#canvas-wrapper{
 			width: 872px;
 			height: 350px;
 			position: absolute;
 			top: 50%;
 			left: 50%;
 			margin: -175px 0px 0px -425px;
+		}
+		canvas {
+			position: absolute;
 		}
 		h1{
 			font-family: Georgia, serif;
@@ -69,9 +72,11 @@
 	
 	<body>
 		<h1>Clock <em>of</em> Clocks</h1>
-		<canvas id="background" width="872" height="350"></canvas>
-		<canvas id="foreground" width="872" height="350"></canvas>
-		<div id="footer">by <a href="http://www.imaginaryroots.co.uk">imaginary<strong>roots</strong></a>. inspired by <a href="http://www.humanssince1982.com"><strong>humans since 1982</strong></a></div>
+		<div id="canvas-wrapper">
+			<canvas id="background" width="872" height="350"></canvas>
+			<canvas id="foreground" width="872" height="350"></canvas>
+		</div>
+		<div id="footer">inspired by <a href="http://www.humanssince1982.com"><strong>humans since 1982</strong></a>, coded by <a href="http://www.imaginaryroots.co.uk">imaginary<strong>roots</strong></a></div>
 		<div id="notice">best viewed in <a href="">chrome</a> / <a href="http://apple.com/safari">safari</a> / <a href="">firefox 4</a></div>
 	</body>
 </html>
