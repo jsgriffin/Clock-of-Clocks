@@ -217,7 +217,7 @@ function drawHands(xPos, yPos, hourAngle, minuteAngle) {
 	context.fillStyle = '#000000';
 	context.translate((width / 2), (height / 2));
 	context.rotate((hourAngle * Math.PI) / 180);
-	context.fillRect(-3, -1 * hoursLength, 6, hoursLength);
+	context.fillRect(-3.5, -1 * hoursLength, 7, hoursLength);
 	
 	context.restore();
 	context.save();
@@ -225,7 +225,7 @@ function drawHands(xPos, yPos, hourAngle, minuteAngle) {
 	// Draw the minute hand
 	context.translate((width / 2), (height / 2));
 	context.rotate((minuteAngle * Math.PI) / 180);
-	context.fillRect(-3, -1 * minutesLength, 6, minutesLength);	
+	context.fillRect(-3.5, -1 * minutesLength, 7, minutesLength);	
 	
 	context.restore();	
 	context.save();
@@ -236,7 +236,7 @@ function drawHands(xPos, yPos, hourAngle, minuteAngle) {
 	context.fillStyle = '#000000';
 	context.translate((width / 2), (height / 2));
 	context.beginPath(); 
-	context.arc(0, 0, 4, 0, Math.PI * 2, false); 
+	context.arc(0, 0, 5, 0, Math.PI * 2, false); 
 	context.closePath();
 	context.fill();
 	
@@ -254,8 +254,8 @@ function drawHands(xPos, yPos, hourAngle, minuteAngle) {
 	var minuteChange = 0;
 	
 	if(!withinRange(hourAngle, targets[xPos][yPos].hour, 0.5) || !withinRange(minuteAngle, targets[xPos][yPos].minute, 0.5)) {
-		hourChange = Math.min(Math.abs(hourAngle - targets[xPos][yPos].hour), Math.abs(start[xPos][yPos].hour - hourAngle)) / 30;
-		minuteChange = Math.min(Math.abs(minuteAngle - targets[xPos][yPos].minute), Math.abs(start[xPos][yPos].minute - minuteAngle)) / 20;
+		hourChange = Math.min(Math.abs(hourAngle - targets[xPos][yPos].hour), Math.abs(start[xPos][yPos].hour - hourAngle)) / 70;
+		minuteChange = Math.min(Math.abs(minuteAngle - targets[xPos][yPos].minute), Math.abs(start[xPos][yPos].minute - minuteAngle)) / 60;
 	}
 
 	if(hourChange != 0 || minuteChange != 0) {
